@@ -28,6 +28,7 @@ install:
   - ../ambit/setup --type=debug --prefix=/home/travis/build/evangelistalab/ambit-bin --cxx=${CXX_COMPILER} --cc=${C_COMPILER} --fc=${Fortran_COMPITER} --type=${BUILD_TYPE}
   - make
   - make install
+  - cd ..
   # We do this conditionally because it saves us some downloading if the
   # version is the same.
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
@@ -48,6 +49,11 @@ install:
   - conda config --add channels http://conda.anaconda.org/psi4
   - conda install --yes psi4
   - source activate test-environment
-
+  # Compile forte
+  - git clone https://github.com/evangelistalab/forte.git forte
+  - cd forte
+  - ./cmake_setup --ambit-bindir=/home/travis/build/evangelistalab/ambit-bin
+  - bash cmake_commands
+  - make 
 script:
-  - psi4 --version
+  - ls
