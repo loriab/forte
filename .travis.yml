@@ -17,6 +17,10 @@ matrix:
             - cmake-data
       env: CXX_COMPILER='g++-4.9' C_COMPILER='gcc-4.9' Fortran_COMPILER='gfortran-4.9' BUILD_TYPE='debug'
 
+python:
+  # We don't actually use the Travis Python, but this keeps it organized.
+  - "2.7"
+
 install:
   - git clone https://github.com/jturney/ambit.git ambit
   - mkdir ambit-obj
