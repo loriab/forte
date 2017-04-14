@@ -11,8 +11,6 @@ matrix:
           packages:
             - libhdf5-serial-dev
             - liblapack-dev
-            - g++-4.9
-            - gfortran-4.9
             - cmake
             - cmake-data
       env: CXX_COMPILER='g++-4.9' C_COMPILER='gcc-4.9' Fortran_COMPILER='gfortran-4.9' BUILD_TYPE='debug'
@@ -22,13 +20,6 @@ python:
   - "2.7"
 
 install:
-  - git clone https://github.com/jturney/ambit.git ambit
-  - mkdir ambit-obj
-  - cd ambit-obj
-  - ../ambit/setup --type=debug --prefix=/home/travis/build/evangelistalab/ambit-bin --cxx=${CXX_COMPILER} --cc=${C_COMPILER} --fc=${Fortran_COMPITER} --type=${BUILD_TYPE}
-  - make
-  - make install
-  - cd ..
   # We do this conditionally because it saves us some downloading if the
   # version is the same.
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
@@ -44,11 +35,21 @@ install:
   # Useful for debugging any issues with conda
   - conda info -a
   # Replace dep1 dep2 ... with your dependencies
+  - conda install gcc-4.9
   - conda install python=2.7
   - conda create -q -n test-environment python=2.7 cmake
   - conda config --add channels http://conda.anaconda.org/psi4
   - conda install --yes psi4
   - source activate test-environment
+  - psi4 --version
+  # Compile ambit
+  - git clone https://github.com/jturney/ambit.git ambit
+  - mkdir ambit-obj
+  - cd ambit-obj
+  - ../ambit/setup --type=debug --prefix=/home/travis/build/evangelistalab/ambit-bin --cxx=${CXX_COMPILER} --cc=${C_COMPILER} --fc=${Fortran_COMPITER} --type=${BUILD_TYPE}
+  - make
+  - make install
+  - cd ..
   # Compile forte
   - git clone https://github.com/evangelistalab/forte.git forte
   - cd forte
