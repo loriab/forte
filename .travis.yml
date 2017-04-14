@@ -3,8 +3,12 @@ language: cpp
 install:
   # We do this conditionally because it saves us some downloading if the
   # version is the same.
-  - curl -O "http://www.psicode.org/downloads/Psi4conda2-latest-Linux.sh" --keepalive-time 500
-  - bash Psi4conda-latest-Linux.sh -b -p $HOME/psi4conda  # agrees to license terms
-  - echo "export PATH=$HOME/psi4conda/bin:\$PATH" >> ~/.bashrc
+  - curl -o Miniconda-latest.sh "https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh"
+  - bash Miniconda-latest.sh -b -p $HOME/miniconda
+  - echo "export PATH=$HOME/miniconda/bin:\$PATH" >> ~/.bashrc
+  - hash -r
+  - conda update --yes --all
+  - conda config --add channels http://conda.anaconda.org/psi4
+  - conda install --yes psi4
 script:
   - psi4 --version
