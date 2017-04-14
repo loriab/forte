@@ -3,36 +3,9 @@ language: cpp
 install:
   # We do this conditionally because it saves us some downloading if the
   # version is the same.
-  - wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
-  - hash -r
-  - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
-  # Useful for debugging any issues with conda
-  - conda info -a
-  # Replace dep1 dep2 ... with your dependencies
-  - conda install gcc
-  - conda install libgcc
-  - conda install python=2.7
-  - conda create -q -n test-environment python=2.7 cmake
-  - conda config --add channels http://conda.anaconda.org/psi4
-  - conda install --yes psi4
-  - source activate test-environment
-  - psi4 --version
-  # Compile ambit
-  - git clone https://github.com/jturney/ambit.git ambit
-  - mkdir ambit-obj
-  - cd ambit-obj
-  - ../ambit/setup --type=debug --prefix=/home/travis/build/evangelistalab/ambit-bin --cxx=${CXX_COMPILER} --cc=${C_COMPILER} --fc=${Fortran_COMPITER} --type=${BUILD_TYPE}
-  - make
-  - make install
-  - cd ..
-  # Compile forte
-  - git clone https://github.com/evangelistalab/forte.git forte
-  - cd forte
-  - ./cmake_setup --ambit-bindir=/home/travis/build/evangelistalab/ambit-bin
-  - bash cmake_commands
-  - make 
+  - curl -O "http://www.psicode.org/downloads/Psi4conda2-latest-Linux.sh" --keepalive-time 2
+  - bash
+  - bash Psi4conda-latest-Linux.sh -b -p $HOME/psi4conda  # agrees to license terms
+  - echo "export PATH=$HOME/psi4conda/bin:\$PATH" >> ~/.bashrc
 script:
-  - ls
+  - psi4 --version
