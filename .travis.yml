@@ -5,10 +5,23 @@ install:
   # version is the same.
   - curl -o Miniconda-latest.sh "https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh"
   - bash Miniconda-latest.sh -b -p $HOME/miniconda
-  - echo "export PATH=$HOME/miniconda/bin:\$PATH" >> ~/.bashrc
+  - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
+  - conda config --set always_yes yes --set changeps1 no
   - conda update --yes --all
   - conda config --add channels http://conda.anaconda.org/psi4
   - conda install --yes psi4
+
+# - bash miniconda.sh -b -p $HOME/miniconda
+# - hash -r
+# - conda update -q conda
+# # Useful for debugging any issues with conda
+# - conda info -a
+# # Replace dep1 dep2 ... with your dependencies
+# - conda install python=2.7
+# - conda create -q -n test-environment python=2.7 cmake
+# - conda config --add channels http://conda.anaconda.org/psi4
+# - conda install --yes psi4
+# - source activate test-environment
 script:
   - psi4 --version
