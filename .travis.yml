@@ -3,7 +3,7 @@ language: cpp
 install:
   # We do this conditionally because it saves us some downloading if the
   # version is the same.
-  - curl -O "http://www.psicode.org/downloads/Psi4conda2-latest-Linux.sh" --keepalive-time 2
+  - curl -O "http://www.psicode.org/downloads/Psi4conda2-latest-Linux.sh" --keepalive-time 10
   - bash
   - bash Psi4conda-latest-Linux.sh -b -p $HOME/psi4conda  # agrees to license terms
   - echo "export PATH=$HOME/psi4conda/bin:\$PATH" >> ~/.bashrc
