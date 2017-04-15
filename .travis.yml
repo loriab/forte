@@ -7,7 +7,6 @@ matrix:
     addons: &1
       apt:
         sources:
-          - llvm-toolchain-precise-3.6
           - ubuntu-toolchain-r-test
           - george-edison55-precise-backports
         packages:
@@ -18,6 +17,8 @@ matrix:
           - gfortran-4.9
           - cmake
           - cmake-data
+          - python2.7
+          - python2.7-dev
     env:
       - CXX_COMPILER='g++-4.9'
       - PYTHON_VER='2.7'
@@ -93,7 +94,8 @@ install:
 # - cd build
 # - ../.scripts/travis_build.sh
 script:
-  - psi4 --version
+  - ls
+#psi4 --version
 #- python ../.scripts/travis_run_test.py
 #- python ../.scripts/travis_print_failing.py
 
