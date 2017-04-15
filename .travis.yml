@@ -3,7 +3,7 @@ sudo: false
 matrix:
   include:
   - os: linux
-    compiler: clang
+    compiler: gcc
     addons: &1
       apt:
         sources:
@@ -12,17 +12,18 @@ matrix:
         - george-edison55-precise-backports
         packages:
         - liblapack-dev
-        - clang-3.6
         - libhdf5-serial-dev
-        - gfortran
+        - g++-5.2
+        - gcc-5.2
+        - gfortran-5.2
     env:
-      - CXX_COMPILER='clang++-3.6'
-      - PYTHON_VER='3.5'
-      - C_COMPILER='clang-3.6'
-      - Fortran_COMPILER='gfortran'
+      - CXX_COMPILER='g++-5.2'
+      - PYTHON_VER='2.7'
+      - C_COMPILER='gcc-5.2'
+      - Fortran_COMPILER='gfortran-5.2'
       - BUILD_TYPE='release'
-      - NAME='clang'
-      - VERSION='3.6'
+      - NAME='gcc'
+      - VERSION='5.2'
 
 before_install:
   - uname -a
