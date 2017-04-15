@@ -7,23 +7,25 @@ matrix:
     addons: &1
       apt:
         sources:
-        - llvm-toolchain-precise-3.6
-        - ubuntu-toolchain-r-test
-        - george-edison55-precise-backports
+          - llvm-toolchain-precise-3.6
+          - ubuntu-toolchain-r-test
+          - george-edison55-precise-backports
         packages:
-        - liblapack-dev
-        - libhdf5-serial-dev
-        - g++-5.2
-        - gcc-5.2
-        - gfortran-5.2
+          - libhdf5-serial-dev
+          - liblapack-dev
+          - g++-4.9
+          - gcc-4.9
+          - gfortran-4.9
+          - cmake
+          - cmake-data
     env:
-      - CXX_COMPILER='g++-5.2'
+      - CXX_COMPILER='g++-4.9'
       - PYTHON_VER='2.7'
-      - C_COMPILER='gcc-5.2'
-      - Fortran_COMPILER='gfortran-5.2'
-      - BUILD_TYPE='release'
+      - C_COMPILER='gcc-4.9'
+      - Fortran_COMPILER='gfortran-4.9'
+      - BUILD_TYPE='debug'
       - NAME='gcc'
-      - VERSION='5.2'
+      - VERSION='4.9'
 
 before_install:
   - uname -a
@@ -32,24 +34,28 @@ before_install:
   - ulimit -a
 
 install:
-  - if [[ "$PYTHON_VER" == "2.7" ]]; then
-      wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
-    else
-      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-    fi
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
-  - hash -r
-  - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
-  # Useful for debugging any issues with conda
-  - conda info -a
-  # Replace dep1 dep2 ... with your dependencies
-  - conda install python=2.7
-  - conda create -q -n test-environment python=2.7 cmake
-  - conda config --add channels http://conda.anaconda.org/psi4
-  - conda install --yes psi4
-  - source activate test-environment
+  # Compile psi4
+  - ls
+  - pwd 
+
+# - if [[ "$PYTHON_VER" == "2.7" ]]; then
+#     wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+#   else
+#     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+#   fi
+# - bash miniconda.sh -b -p $HOME/miniconda
+# - export PATH="$HOME/miniconda/bin:$PATH"
+# - hash -r
+# - conda config --set always_yes yes --set changeps1 no
+# - conda update -q conda
+# # Useful for debugging any issues with conda
+# - conda info -a
+# # Replace dep1 dep2 ... with your dependencies
+# - conda install python=2.7
+# - conda create -q -n test-environment python=2.7 cmake
+# - conda config --add channels http://conda.anaconda.org/psi4
+# - conda install --yes psi4
+# - source activate test-environment
 
 #before_script:
 # - python -V
