@@ -3,31 +3,26 @@ sudo: false
 matrix:
   include:
   - os: linux
-    compiler: gcc
+    compiler: clang
     addons: &1
       apt:
         sources:
-          - kalakris-cmake
-          - ubuntu-toolchain-r-test
-          - george-edison55-precise-backports
+        - llvm-toolchain-precise-3.6
+        - ubuntu-toolchain-r-test
+        - george-edison55-precise-backports
         packages:
-          - libhdf5-serial-dev
-          - liblapack-dev
-          - g++-4.9
-          - gcc-4.9
-          - gfortran-4.9
-          - cmake
-          - cmake-data
-          - python2.7
-          - python2.7-dev
+        - liblapack-dev
+        - clang-3.6
+        - libhdf5-serial-dev
+        - gfortran
     env:
-      - CXX_COMPILER='g++-4.9'
-      - PYTHON_VER='2.7'
-      - C_COMPILER='gcc-4.9'
-      - Fortran_COMPILER='gfortran-4.9'
+      - CXX_COMPILER='clang++-3.6'
+      - PYTHON_VER='3.5'
+      - C_COMPILER='clang-3.6'
+      - Fortran_COMPILER='gfortran'
       - BUILD_TYPE='debug'
-      - NAME='gcc'
-      - VERSION='4.9'
+      - NAME='clang'
+      - VERSION='3.6'
 
 before_install:
   - uname -a
@@ -36,67 +31,51 @@ before_install:
   - ulimit -a
 
 install:
-  # Compile psi4
-  - ls
-  - pwd 
-  - cd ..
-  - git clone https://github.com/psi4/psi4.git psi4
-  - cd psi4
-  - > 
-      cmake -H. -B/home/travis/build/evangelistalab/psi4-obj
-      -DCMAKE_C_COMPILER=${C_COMPILER}
-      -DCMAKE_CXX_COMPILER=${CXX_COMPILER}
-      -DCMAKE_BUILD_TYPE=Debug
-      -DMAX_AM_ERI=4
-      -DBUILD_SHARED_LIBS=ON
-      -DCMAKE_INSTALL_PREFIX=/home/travis/build/evangelistalab/psi4-bin
-  - cd ../psi4-obj
-  - make                          
-# - if [[ "$PYTHON_VER" == "2.7" ]]; then
-#     wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
-#   else
-#     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-#   fi
-# - bash miniconda.sh -b -p $HOME/miniconda
-# - export PATH="$HOME/miniconda/bin:$PATH"
-# - hash -r
-# - conda config --set always_yes yes --set changeps1 no
-# - conda update -q conda
-# # Useful for debugging any issues with conda
-# - conda info -a
-# # Replace dep1 dep2 ... with your dependencies
-# - conda install python=2.7
-# - conda create -q -n test-environment python=2.7 cmake
-# - conda config --add channels http://conda.anaconda.org/psi4
-# - conda install --yes psi4
-# - source activate test-environment
+- if [[ "$PYTHON_VER" == "2.7" ]]; then
+    wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+  else
+    wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+  fi
+- bash miniconda.sh -b -p $HOME/miniconda
+- export PATH="$HOME/miniconda/bin:$PATH"
+- hash -r
+- conda config --set always_yes yes --set changeps1 no
+- conda update -q conda
+- conda info -a
+- conda create -q -n p4env python=$PYTHON_VER numpy cmake dftd3 libint libxc gdma libefp -c psi4/label/test -c psi4
+- source activate p4env
+- conda list
 
-#before_script:
-# - python -V
-# - python -c 'import numpy; print(numpy.version.version)'
-# - cd ${TRAVIS_BUILD_DIR}
-# - export CXX=${CXX_COMPILER}
-# - export CC=${C_COMPILER}
-# - export FC=${Fortran_COMPILER}
-# - export CTEST_OUTPUT_ON_FAILURE=1
-# - ${CXX_COMPILER} --version
-# - ${Fortran_COMPILER} --version
-# - ${C_COMPILER} --version
-# - > 
-#     cmake -Bbuild -H. 
-#     -DCMAKE_CXX_COMPILER=${CXX_COMPILER} 
-#     -DCMAKE_C_COMPILER=${C_COMPILER} 
-#     -DCMAKE_BUILD_TYPE=${BUILD_TYPE} 
-#     -DCMAKE_PREFIX_PATH=${HOME}/miniconda/envs/p4env
-#     -DPYTHON_EXECUTABLE="${HOME}/miniconda/envs/p4env/bin/python"
-#     -DENABLE_gdma=ON
-#     -DENABLE_PLUGIN_TESTING=ON
-#     -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/Install
-# - cd build
-# - ../.scripts/travis_build.sh
+before_script:
+- python -V
+- python -c 'import numpy; print(numpy.version.version)'
+- cd ${TRAVIS_BUILD_DIR}
+- export CXX=${CXX_COMPILER}
+- export CC=${C_COMPILER}
+- export FC=${Fortran_COMPILER}
+- export CTEST_OUTPUT_ON_FAILURE=1
+- ${CXX_COMPILER} --version
+- ${Fortran_COMPILER} --version
+- ${C_COMPILER} --version
+- cd ${HOME}
+- ls
+- git clone https://github.com/psi4/psi4.git psi4
+- cd psi4
+- > 
+    cmake -Bbuild -H. 
+    -DCMAKE_CXX_COMPILER=${CXX_COMPILER} 
+    -DCMAKE_C_COMPILER=${C_COMPILER} 
+    -DCMAKE_BUILD_TYPE=${BUILD_TYPE} 
+    -DCMAKE_PREFIX_PATH=${HOME}/miniconda/envs/p4env
+    -DPYTHON_EXECUTABLE="${HOME}/miniconda/envs/p4env/bin/python"
+    -DENABLE_gdma=ON
+    -DENABLE_PLUGIN_TESTING=ON
+    -DCMAKE_INSTALL_PREFIX=${HOME}/psi4-bin
+- cd build
+- make
+- make install
+#- ../.scripts/travis_build.sh
 script:
-  - ls
-#psi4 --version
 #- python ../.scripts/travis_run_test.py
 #- python ../.scripts/travis_print_failing.py
 
@@ -104,4 +83,5 @@ script:
 branches:
   only:
   - master
-  - travis
+  - 1.0.x
+  - libxc
