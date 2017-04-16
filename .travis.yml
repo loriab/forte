@@ -45,8 +45,6 @@ install:
 - conda create -q -n p4env python=$PYTHON_VER numpy cmake dftd3 libint libxc gdma libefp -c psi4/label/test -c psi4
 - source activate p4env
 - conda list
-
-before_script:
 - python -V
 - python -c 'import numpy; print(numpy.version.version)'
 - cd ${TRAVIS_BUILD_DIR}
