@@ -81,5 +81,4 @@ script:
 branches:
   only:
   - master
-  - 1.0.x
-  - libxc
+  - travis
