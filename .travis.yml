@@ -80,7 +80,16 @@ install:
 - ${Fortran_COMPILER} --version
 - ${C_COMPILER} --version
 - cd ${HOME}
-- ls
+- pwd
+# Compile ambit
+- git clone https://github.com/jturney/ambit.git ambit
+- mkdir ambit-obj
+- cd ambit-obj
+- ../ambit/setup --type=debug --prefix=/home/travis/build/evangelistalab/ambit-bin --cxx=${CXX_COMPILER} --cc=${C_COMPILER} --fc=${Fortran_COMPITER} --type=${BUILD_TYPE}
+- make
+- make install
+- cd ${HOME}
+# Compile Psi4
 - git clone https://github.com/psi4/psi4.git psi4
 - cd psi4
 - > 
@@ -96,6 +105,8 @@ install:
 - cd build
 - make
 - make install
+- cd ${HOME}
+
 #- ../.scripts/travis_build.sh
 script:
 #- python ../.scripts/travis_run_test.py
