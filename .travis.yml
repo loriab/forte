@@ -79,17 +79,8 @@ install:
 - ${CXX_COMPILER} --version
 - ${Fortran_COMPILER} --version
 - ${C_COMPILER} --version
-- cd ${HOME}
-- pwd
-# Compile ambit
-- git clone https://github.com/jturney/ambit.git ambit
-- mkdir ambit-obj
-- cd ambit-obj
-- ../ambit/setup --type=debug --prefix=/home/travis/build/evangelistalab/ambit-bin --cxx=${CXX_COMPILER} --cc=${C_COMPILER} --fc=${Fortran_COMPITER} --type=${BUILD_TYPE}
-- make
-- make install
-- cd ${HOME}
 # Compile Psi4
+- cd ${HOME}/build
 - git clone https://github.com/psi4/psi4.git psi4
 - cd psi4
 - > 
@@ -101,14 +92,32 @@ install:
     -DPYTHON_EXECUTABLE="${HOME}/miniconda/envs/p4env/bin/python"
     -DENABLE_gdma=ON
     -DENABLE_PLUGIN_TESTING=ON
-    -DCMAKE_INSTALL_PREFIX=${HOME}/psi4-bin
+    -DCMAKE_INSTALL_PREFIX=${HOME}/build/psi4-bin
 - cd build
 - make
 - make install
-- cd ${HOME}
+- export PATH="$HOME/build/psi4-bin/bin:$PATH"
+- hash -r
+- which psi4
+# Compile ambit
+- cd ${HOME}/build
+- pwd
+- git clone https://github.com/jturney/ambit.git ambit
+- mkdir ambit-obj
+- cd ambit-obj
+- ../ambit/setup --type=debug --prefix=/home/travis/build/ambit-bin --cxx=${CXX_COMPILER} --cc=${C_COMPILER} --fc=${Fortran_COMPITER} --type=${BUILD_TYPE}
+- make
+- make install
+# Compile forte
+- cd ${HOME}/build/evangelistalab/forte
+- ./cmake_setup --ambit-bindir=/home/travis/build/ambit-bin
+- bash cmake_commands
+- make
+
 
 #- ../.scripts/travis_build.sh
 script:
+- psi4 --version
 #- python ../.scripts/travis_run_test.py
 #- python ../.scripts/travis_print_failing.py
 
